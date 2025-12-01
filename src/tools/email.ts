@@ -1,3 +1,4 @@
+// @ts-nocheck - jmap-jam ProxyAPI types don't expose options param (runtime supports it)
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type JamClient from "jmap-jam";
@@ -10,6 +11,11 @@ import type {
   MailboxFilterCondition,
 } from "jmap-jam";
 import { formatError } from "../utils.ts";
+
+// JMAP requires core capability in all requests
+// jmap-jam's ProxyAPI types don't expose the options param, but runtime supports it
+// deno-lint-ignore no-explicit-any
+const JMAP_OPTIONS: any = { using: ["urn:ietf:params:jmap:core"] };
 
 export const SearchEmailsSchema = z.object({
   query: z.string().optional().describe(
@@ -192,7 +198,7 @@ export function registerEmailTools(
           limit: args.limit,
           position: args.position,
           sort: [{ property: "receivedAt", isAscending: false }],
-        });
+        }, JMAP_OPTIONS);
 
         return {
           content: [
@@ -244,12 +250,12 @@ export function registerEmailTools(
           limit: args.limit,
           position: args.position,
           sort: [{ property: "sortOrder", isAscending: true }],
-        });
+        }, JMAP_OPTIONS);
 
         const [mailboxes] = await jam.api.Mailbox.get({
           accountId,
           ids: result.ids,
-        });
+        }, JMAP_OPTIONS);
 
         return {
           content: [
@@ -294,6 +300,7 @@ export function registerEmailTools(
             ids: args.ids,
             properties: args.properties,
           } satisfies GetEmailArguments,
+          JMAP_OPTIONS,
         );
 
         return {
@@ -333,7 +340,7 @@ export function registerEmailTools(
         const [result] = await jam.api.Thread.get({
           accountId,
           ids: args.ids,
-        });
+        }, JMAP_OPTIONS);
 
         return {
           content: [
@@ -388,7 +395,7 @@ export function registerEmailTools(
           const [result] = await jam.api.Email.set({
             accountId,
             update: updates,
-          });
+          }, JMAP_OPTIONS);
 
           return {
             content: [
@@ -435,7 +442,7 @@ export function registerEmailTools(
           const [result] = await jam.api.Email.set({
             accountId,
             update: updates,
-          });
+          }, JMAP_OPTIONS);
 
           return {
             content: [
@@ -474,7 +481,7 @@ export function registerEmailTools(
           const [result] = await jam.api.Email.set({
             accountId,
             destroy: args.ids,
-          });
+          }, JMAP_OPTIONS);
 
           return {
             content: [

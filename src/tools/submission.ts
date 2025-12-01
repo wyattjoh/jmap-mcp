@@ -1,9 +1,15 @@
+// @ts-nocheck - jmap-jam ProxyAPI types don't expose options param (runtime supports it)
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type JamClient from "jmap-jam";
 import type { EmailCreate } from "jmap-jam";
 
 import { formatError } from "../utils.ts";
+
+// JMAP requires core capability in all requests
+// jmap-jam's ProxyAPI types don't expose the options param, but runtime supports it
+// deno-lint-ignore no-explicit-any
+const JMAP_OPTIONS: any = { using: ["urn:ietf:params:jmap:core"] };
 
 export const SendEmailSchema = z.object({
   to: z.array(z.object({
@@ -81,7 +87,7 @@ export function registerEmailSubmissionTools(
           create: {
             "draft1": emailData,
           },
-        });
+        }, JMAP_OPTIONS);
 
         if (!emailResult.created?.draft1) {
           throw new Error("Failed to create email draft");
@@ -95,7 +101,7 @@ export function registerEmailSubmissionTools(
               identityId: args.identityId,
             },
           },
-        });
+        }, JMAP_OPTIONS);
 
         return {
           content: [
@@ -149,7 +155,7 @@ export function registerEmailSubmissionTools(
             "inReplyTo",
             "references",
           ],
-        });
+        }, JMAP_OPTIONS);
 
         const original = originalEmail.list[0];
         if (!original) {
@@ -215,7 +221,7 @@ export function registerEmailSubmissionTools(
           create: {
             "reply1": emailData,
           },
-        });
+        }, JMAP_OPTIONS);
 
         if (!emailResult.created?.reply1) {
           throw new Error("Failed to create reply draft");
@@ -229,7 +235,7 @@ export function registerEmailSubmissionTools(
               identityId: args.identityId,
             },
           },
-        });
+        }, JMAP_OPTIONS);
 
         return {
           content: [

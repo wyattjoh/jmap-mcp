@@ -2,6 +2,7 @@
   "version": "5",
   "specifiers": {
     "jsr:@htunnicliff/jmap-jam@0.10": "0.10.0",
+    "jsr:@htunnicliff/jmap-jam@0.10.0": "0.10.0",
     "npm:@modelcontextprotocol/sdk@1": "1.17.2_express@5.1.0_zod@3.25.76",
     "npm:type-fest@4": "4.41.0",
     "npm:zod@^3.22.0": "3.25.76"
