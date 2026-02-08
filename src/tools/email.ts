@@ -1,14 +1,14 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type JamClient from "jmap-jam";
+import type { GetEmailArguments } from "jmap-jam";
 import type {
   Email,
   EmailCreate,
   EmailFilterCondition,
   FilterCondition,
-  GetEmailArguments,
   MailboxFilterCondition,
-} from "jmap-jam";
+} from "jmap-rfc-types";
 import { formatError } from "../utils.ts";
 
 export const SearchEmailsSchema = z.object({

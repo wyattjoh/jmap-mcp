@@ -1,0 +1,3 @@
+[submodule ".repositories/jmap-jam"]
+	path = .repositories/jmap-jam
+	url = https://github.com/htunnicliff/jmap-jam.git

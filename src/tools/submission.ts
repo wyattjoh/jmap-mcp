@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type JamClient from "jmap-jam";
-import type { EmailCreate } from "jmap-jam";
+import type { EmailCreate } from "jmap-rfc-types";
 
 import { formatError } from "../utils.ts";
 
