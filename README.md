@@ -63,7 +63,7 @@ Add the following to your agent of choice:
         "run",
         "--allow-net=api.fastmail.com",
         "--allow-env=JMAP_SESSION_URL,JMAP_BEARER_TOKEN,JMAP_ACCOUNT_ID",
-        "jsr:@wyattjoh/jmap-mcp@0.1.1"
+        "jsr:@wyattjoh/jmap-mcp"
       ],
       "env": {
         "JMAP_SESSION_URL": "https://api.fastmail.com/jmap/session",
