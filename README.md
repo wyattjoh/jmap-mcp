@@ -9,6 +9,10 @@ JMAP (JSON Meta Application Protocol) email servers. Built with Deno and using
 the [@htunnicliff/jmap-jam](https://jsr.io/@htunnicliff/jmap-jam) client
 library.
 
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/wyattjoh-jmap-mcp).
+
 ## Features
 
 ### Email Management Tools
