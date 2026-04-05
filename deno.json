@@ -15,7 +15,7 @@
     "test": "deno test --allow-env --allow-net"
   },
   "imports": {
-    "@modelcontextprotocol/sdk": "npm:@modelcontextprotocol/sdk@^1.26.0",
+    "@modelcontextprotocol/sdk": "npm:@modelcontextprotocol/sdk@^1.29.0",
     "zod": "npm:zod@^4.3.6",
     "jmap-jam": "npm:jmap-jam@^0.13.1",
     "jmap-rfc-types": "npm:jmap-rfc-types@^0.1.2",
