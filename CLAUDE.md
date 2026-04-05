@@ -12,14 +12,21 @@ Stalwart Mail Server.
 
 ## Development Commands
 
-### Building and Running
+- `deno task start` - Run the MCP server
+- `deno task watch` - Run with file watching
+- `deno check` - Type-check the project
+- `deno fmt` - Format code (excludes CHANGELOG.md)
+- `deno lint` - Lint the project
+- `deno test --allow-env --allow-net` - Run all tests
+- `deno test --allow-env --allow-net src/tools/email_test.ts` - Run a single
+  test file
+- `deno publish --dry-run --allow-dirty` - Validate JSR publish
 
-- `deno task start` - Run the MCP server in development
-- `deno task watch` - Run with file watching for development
+### Pre-commit Hooks
 
-### Testing Connection
-
-- `deno run --allow-env --allow-net src/mod.ts` - Test JMAP server connection
+Run `deno task hooks:install` to set up git hooks. Pre-commit runs
+`deno check && deno fmt --check && deno lint`. Pre-push runs
+`deno publish --dry-run --allow-dirty`.
 
 ### Required Environment Variables
 
@@ -49,7 +56,7 @@ JMAP_ACCOUNT_ID="account-id"  # Optional, auto-detected if not provided
 - **Runtime validation** - All inputs validated with Zod schemas before
   processing
 - **Capability-based registration** - Tools are registered based on JMAP server
-  capabilities
+  capabilities (checked in `mod.ts` via `session.capabilities`)
 - **Graceful degradation** - Server adapts to read-only accounts and limited
   JMAP capabilities
 
@@ -60,6 +67,14 @@ JMAP_ACCOUNT_ID="account-id"  # Optional, auto-detected if not provided
 - Supports both read-only and full-access JMAP accounts
 - Handles JMAP mail (`urn:ietf:params:jmap:mail`) and submission
   (`urn:ietf:params:jmap:submission`) capabilities
+
+### Testing Pattern
+
+Tests use MCP SDK's `InMemoryTransport` to create a connected client/server
+pair, with a mock `JamClient` that stubs `jam.api.*` methods. See
+`src/tools/email_test.ts` for the pattern. New tool tests should follow this
+approach: create mock, register tools on server, call tools via client, assert
+results.
 
 ### Tool Categories
 
@@ -85,6 +100,8 @@ JMAP_ACCOUNT_ID="account-id"  # Optional, auto-detected if not provided
 - All external inputs must be validated with Zod schemas
 - Error handling should use the `formatError()` utility
 - Console output uses `console.warn()` for server status messages
+- Published to JSR as `@wyattjoh/jmap-mcp`; run `deno publish --dry-run` to
+  validate before pushing
 
 ### JMAP Considerations
 
