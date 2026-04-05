@@ -1,8 +1,8 @@
 # JMAP MCP Server
 
-[![JSR](https://jsr.io/badges/@temikus/jmap-mcp)](https://jsr.io/@temikus/jmap-mcp)
-[![JSR Score](https://jsr.io/badges/@temikus/jmap-mcp/score)](https://jsr.io/@temikus/jmap-mcp)
-[![JSR Scope](https://jsr.io/badges/@temikus)](https://jsr.io/@temikus)
+[![JSR](https://jsr.io/badges/@wyattjoh/jmap-mcp)](https://jsr.io/@wyattjoh/jmap-mcp)
+[![JSR Score](https://jsr.io/badges/@wyattjoh/jmap-mcp/score)](https://jsr.io/@wyattjoh/jmap-mcp)
+[![JSR Scope](https://jsr.io/badges/@wyattjoh)](https://jsr.io/@wyattjoh)
 
 A Model Context Protocol (MCP) server that provides tools for interacting with
 JMAP (JSON Meta Application Protocol) email servers. Built with Deno and using
@@ -64,6 +64,8 @@ library.
 
 Add the following to your agent of choice:
 
+<!-- x-release-please-start-version -->
+
 ```json
 {
   "mcpServers": {
@@ -74,7 +76,7 @@ Add the following to your agent of choice:
         "run",
         "--allow-net=api.fastmail.com",
         "--allow-env=JMAP_SESSION_URL,JMAP_BEARER_TOKEN,JMAP_ACCOUNT_ID",
-        "jsr:@temikus/jmap-mcp"
+        "jsr:@wyattjoh/jmap-mcp@0.3.0"
       ],
       "env": {
         "JMAP_SESSION_URL": "https://api.fastmail.com/jmap/session",
@@ -84,6 +86,8 @@ Add the following to your agent of choice:
   }
 }
 ```
+
+<!-- x-release-please-end -->
 
 > Replace `api.fastmail.com` in `--allow-net` with your JMAP server's hostname
 > if not using FastMail.

@@ -21,6 +21,9 @@
     "jmap-rfc-types": "npm:jmap-rfc-types@^0.1.2",
     "@std/assert": "jsr:@std/assert@^1.0.19"
   },
+  "fmt": {
+    "exclude": ["CHANGELOG.md"]
+  },
   "exclude": [".repositories"],
   "repository": {
     "type": "git",
