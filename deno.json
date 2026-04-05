@@ -1,10 +1,16 @@
 {
   "name": "@wyattjoh/jmap-mcp",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT",
   "exports": "./src/mod.ts",
   "publish": {
-    "include": ["LICENSE", "README.md", "mod.ts", "src/**/*.ts", "deno.json"]
+    "include": [
+      "LICENSE",
+      "README.md",
+      "mod.ts",
+      "src/**/*.ts",
+      "deno.json"
+    ]
   },
   "tasks": {
     "start": "deno run --allow-env --allow-net src/mod.ts",
@@ -22,9 +28,13 @@
     "@std/assert": "jsr:@std/assert@^1.0.19"
   },
   "fmt": {
-    "exclude": ["CHANGELOG.md"]
+    "exclude": [
+      "CHANGELOG.md"
+    ]
   },
-  "exclude": [".repositories"],
+  "exclude": [
+    ".repositories"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/wyattjoh/jmap-mcp.git"
