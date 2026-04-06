@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/wyattjoh/jmap-mcp/compare/jmap-mcp-v0.5.0...jmap-mcp-v0.6.0) (2026-04-06)
+
+
+### Features
+
+* add userConfig for JMAP credentials in plugin manifest ([cdc352f](https://github.com/wyattjoh/jmap-mcp/commit/cdc352f16c02300b36bb7c883a6da84bf3f92a79))
+
 ## [0.5.0](https://github.com/wyattjoh/jmap-mcp/compare/jmap-mcp-v0.4.0...jmap-mcp-v0.5.0) (2026-04-05)
 
 
