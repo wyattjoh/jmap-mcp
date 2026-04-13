@@ -1,6 +1,6 @@
 {
   "name": "jmap-mcp",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "MCP server for JMAP email management",
   "author": {
     "name": "Wyatt Johnson"
@@ -32,7 +32,7 @@
         "run",
         "--allow-env",
         "--allow-net",
-        "jsr:@wyattjoh/jmap-mcp@0.6.1"
+        "jsr:@wyattjoh/jmap-mcp@0.6.2"
       ],
       "env": {
         "JMAP_SESSION_URL": "${user_config.jmap_session_url}",
