@@ -276,6 +276,7 @@ export function registerEmailTools(
           filter,
           limit: args.limit,
           position: args.position,
+          calculateTotal: true,
           sort: [{ property: "receivedAt", isAscending: false }],
         });
 
@@ -334,6 +335,7 @@ export function registerEmailTools(
           filter,
           limit: args.limit,
           position: args.position,
+          calculateTotal: true,
           sort: [{ property: "sortOrder", isAscending: true }],
         });
 

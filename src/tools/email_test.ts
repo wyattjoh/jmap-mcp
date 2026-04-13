@@ -229,3 +229,55 @@ Deno.test("search_emails pagination indicates hasMore when results exceed page",
     "Showing 2 of 10 results (position 0\u20131)",
   );
 });
+
+Deno.test("search_emails passes calculateTotal to Email.query", async () => {
+  // deno-lint-ignore no-explicit-any
+  let capturedArgs: any;
+  const { client } = await setup({
+    emailQuery: (args: unknown) => {
+      capturedArgs = args;
+      return Promise.resolve([{
+        ids: ["e1"],
+        total: 1,
+        position: 0,
+        queryState: "qs-1",
+        canCalculateChanges: true,
+      }]);
+    },
+  });
+  await client.callTool({
+    name: "search_emails",
+    arguments: { query: "test" },
+  });
+
+  assertEquals(capturedArgs.calculateTotal, true);
+});
+
+Deno.test("get_mailboxes passes calculateTotal to Mailbox.query", async () => {
+  // deno-lint-ignore no-explicit-any
+  let capturedArgs: any;
+  const jam = createMockJam();
+  // Override Mailbox.query to capture args
+  // deno-lint-ignore no-explicit-any
+  (jam as any).api.Mailbox.query = (args: unknown) => {
+    capturedArgs = args;
+    return Promise.resolve([{ ids: ["m1"], total: 1, position: 0 }]);
+  };
+
+  const server = new McpServer({ name: "test", version: "0.0.1" });
+  registerEmailTools(server, jam as never, "acct-1", false);
+
+  const [clientTransport, serverTransport] = InMemoryTransport
+    .createLinkedPair();
+  await server.connect(serverTransport);
+
+  const client = new Client({ name: "test-client", version: "0.0.1" });
+  await client.connect(clientTransport);
+
+  await client.callTool({
+    name: "get_mailboxes",
+    arguments: {},
+  });
+
+  assertEquals(capturedArgs.calculateTotal, true);
+});
