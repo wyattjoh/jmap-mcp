@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.2](https://github.com/wyattjoh/jmap-mcp/compare/jmap-mcp-v0.6.1...jmap-mcp-v0.6.2) (2026-04-13)
+
+
+### Bug Fixes
+
+* add calculateTotal to JMAP query calls for reliable pagination ([5c85248](https://github.com/wyattjoh/jmap-mcp/commit/5c85248511cbbc4ae097a1e215e43cba1fead8ca))
+* add calculateTotal to JMAP query calls for reliable pagination ([356406c](https://github.com/wyattjoh/jmap-mcp/commit/356406ca84b1e9a1de33d54ce9e1d23e798b92d9))
+
 ## [0.6.1](https://github.com/wyattjoh/jmap-mcp/compare/jmap-mcp-v0.6.0...jmap-mcp-v0.6.1) (2026-04-06)
 
 
