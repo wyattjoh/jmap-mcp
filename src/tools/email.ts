@@ -9,7 +9,7 @@ import type {
   FilterCondition,
   MailboxFilterCondition,
 } from "jmap-rfc-types";
-import { formatError } from "../utils.ts";
+import { formatError, jsonStringify } from "../utils.ts";
 
 export const SearchEmailsSchema = z.object({
   query: z.string().optional().describe(
@@ -284,25 +284,21 @@ export function registerEmailTools(
           content: [
             {
               type: "text",
-              text: JSON.stringify(
-                {
-                  ids: result.ids,
-                  total: result.total,
-                  position: result.position,
-                  nextPosition: result.position + result.ids.length,
-                  hasMore:
-                    result.position + result.ids.length < (result.total || 0),
-                  _pagination: `Showing ${result.ids.length} of ${
-                    result.total ?? "unknown"
-                  } results (position ${result.position}–${
-                    result.position + result.ids.length - 1
-                  })`,
-                  queryState: result.queryState,
-                  canCalculateChanges: result.canCalculateChanges,
-                },
-                null,
-                2,
-              ),
+              text: jsonStringify({
+                ids: result.ids,
+                total: result.total,
+                position: result.position,
+                nextPosition: result.position + result.ids.length,
+                hasMore:
+                  result.position + result.ids.length < (result.total || 0),
+                _pagination: `Showing ${result.ids.length} of ${
+                  result.total ?? "unknown"
+                } results (position ${result.position}–${
+                  result.position + result.ids.length - 1
+                })`,
+                queryState: result.queryState,
+                canCalculateChanges: result.canCalculateChanges,
+              }),
             },
           ],
         };
@@ -348,17 +344,13 @@ export function registerEmailTools(
           content: [
             {
               type: "text",
-              text: JSON.stringify(
-                {
-                  mailboxes: mailboxes.list,
-                  total: result.total,
-                  position: result.position,
-                  hasMore:
-                    result.position + result.ids.length < (result.total || 0),
-                },
-                null,
-                2,
-              ),
+              text: jsonStringify({
+                mailboxes: mailboxes.list,
+                total: result.total,
+                position: result.position,
+                hasMore:
+                  result.position + result.ids.length < (result.total || 0),
+              }),
             },
           ],
         };
@@ -393,15 +385,11 @@ export function registerEmailTools(
           content: [
             {
               type: "text",
-              text: JSON.stringify(
-                {
-                  emails: result.list,
-                  notFound: result.notFound,
-                  state: result.state,
-                },
-                null,
-                2,
-              ),
+              text: jsonStringify({
+                emails: result.list,
+                notFound: result.notFound,
+                state: result.state,
+              }),
             },
           ],
         };
@@ -433,14 +421,10 @@ export function registerEmailTools(
           content: [
             {
               type: "text",
-              text: JSON.stringify(
-                {
-                  threads: result.list,
-                  notFound: result.notFound,
-                },
-                null,
-                2,
-              ),
+              text: jsonStringify({
+                threads: result.list,
+                notFound: result.notFound,
+              }),
             },
           ],
         };
@@ -501,7 +485,7 @@ export function registerEmailTools(
           content: [
             {
               type: "text",
-              text: JSON.stringify(response, null, 2),
+              text: jsonStringify(response),
             },
           ],
         };
@@ -512,15 +496,11 @@ export function registerEmailTools(
             content: [
               {
                 type: "text",
-                text: JSON.stringify(
-                  {
-                    error: "cannotCalculateChanges",
-                    message:
-                      "The provided state is too old or the server cannot calculate changes. Please perform a fresh search_emails call to get the current state.",
-                  },
-                  null,
-                  2,
-                ),
+                text: jsonStringify({
+                  error: "cannotCalculateChanges",
+                  message:
+                    "The provided state is too old or the server cannot calculate changes. Please perform a fresh search_emails call to get the current state.",
+                }),
               },
             ],
           };
@@ -557,17 +537,13 @@ export function registerEmailTools(
           content: [
             {
               type: "text",
-              text: JSON.stringify(
-                {
-                  oldQueryState: result.oldQueryState,
-                  newQueryState: result.newQueryState,
-                  added: result.added,
-                  removed: result.removed,
-                  total: result.total,
-                },
-                null,
-                2,
-              ),
+              text: jsonStringify({
+                oldQueryState: result.oldQueryState,
+                newQueryState: result.newQueryState,
+                added: result.added,
+                removed: result.removed,
+                total: result.total,
+              }),
             },
           ],
         };
@@ -578,15 +554,11 @@ export function registerEmailTools(
             content: [
               {
                 type: "text",
-                text: JSON.stringify(
-                  {
-                    error: "cannotCalculateChanges",
-                    message:
-                      "The provided queryState is too old or the server cannot calculate changes. Please perform a fresh search_emails call to get the current state.",
-                  },
-                  null,
-                  2,
-                ),
+                text: jsonStringify({
+                  error: "cannotCalculateChanges",
+                  message:
+                    "The provided queryState is too old or the server cannot calculate changes. Please perform a fresh search_emails call to get the current state.",
+                }),
               },
             ],
           };
@@ -634,14 +606,10 @@ export function registerEmailTools(
             content: [
               {
                 type: "text",
-                text: JSON.stringify(
-                  {
-                    updated: result.updated,
-                    notUpdated: result.notUpdated,
-                  },
-                  null,
-                  2,
-                ),
+                text: jsonStringify({
+                  updated: result.updated,
+                  notUpdated: result.notUpdated,
+                }),
               },
             ],
           };
@@ -681,14 +649,10 @@ export function registerEmailTools(
             content: [
               {
                 type: "text",
-                text: JSON.stringify(
-                  {
-                    updated: result.updated,
-                    notUpdated: result.notUpdated,
-                  },
-                  null,
-                  2,
-                ),
+                text: jsonStringify({
+                  updated: result.updated,
+                  notUpdated: result.notUpdated,
+                }),
               },
             ],
           };
@@ -720,14 +684,10 @@ export function registerEmailTools(
             content: [
               {
                 type: "text",
-                text: JSON.stringify(
-                  {
-                    destroyed: result.destroyed,
-                    notDestroyed: result.notDestroyed,
-                  },
-                  null,
-                  2,
-                ),
+                text: jsonStringify({
+                  destroyed: result.destroyed,
+                  notDestroyed: result.notDestroyed,
+                }),
               },
             ],
           };

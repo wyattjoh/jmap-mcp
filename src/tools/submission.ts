@@ -3,7 +3,7 @@ import { z } from "zod";
 import type JamClient from "jmap-jam";
 import type { EmailCreate } from "jmap-rfc-types";
 
-import { formatError } from "../utils.ts";
+import { formatError, jsonStringify } from "../utils.ts";
 
 export const SendEmailSchema = z.object({
   to: z.array(z.object({
@@ -105,15 +105,11 @@ export function registerEmailSubmissionTools(
           content: [
             {
               type: "text",
-              text: JSON.stringify(
-                {
-                  emailId: emailResult.created.draft1.id,
-                  submissionId: submissionResult.created?.submission1?.id,
-                  sent: !!submissionResult.created?.submission1,
-                },
-                null,
-                2,
-              ),
+              text: jsonStringify({
+                emailId: emailResult.created.draft1.id,
+                submissionId: submissionResult.created?.submission1?.id,
+                sent: !!submissionResult.created?.submission1,
+              }),
             },
           ],
         };
@@ -239,16 +235,12 @@ export function registerEmailSubmissionTools(
           content: [
             {
               type: "text",
-              text: JSON.stringify(
-                {
-                  emailId: emailResult.created.reply1.id,
-                  submissionId: submissionResult.created?.submission1?.id,
-                  sent: !!submissionResult.created?.submission1,
-                  replyAll: args.replyAll,
-                },
-                null,
-                2,
-              ),
+              text: jsonStringify({
+                emailId: emailResult.created.reply1.id,
+                submissionId: submissionResult.created?.submission1?.id,
+                sent: !!submissionResult.created?.submission1,
+                replyAll: args.replyAll,
+              }),
             },
           ],
         };
