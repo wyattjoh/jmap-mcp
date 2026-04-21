@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.3](https://github.com/wyattjoh/jmap-mcp/compare/jmap-mcp-v0.6.2...jmap-mcp-v0.6.3) (2026-04-21)
+
+
+### Performance Improvements
+
+* use compact JSON output to reduce token usage ([d97c6c4](https://github.com/wyattjoh/jmap-mcp/commit/d97c6c4b2a66d4942678a8e291239a72bd52be0e))
+* use compact JSON output to reduce token usage ([f08c2fa](https://github.com/wyattjoh/jmap-mcp/commit/f08c2fadea348c0f9eec50408af966ad0e57a082))
+
 ## [0.6.2](https://github.com/wyattjoh/jmap-mcp/compare/jmap-mcp-v0.6.1...jmap-mcp-v0.6.2) (2026-04-13)
 
 
