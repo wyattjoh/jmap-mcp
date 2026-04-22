@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # --- Stage 1: Cache dependencies ---
-FROM docker.io/denoland/deno:2.7.12 AS deps
+FROM docker.io/denoland/deno:2.7.13 AS deps
 
 WORKDIR /app
 
@@ -13,7 +13,7 @@ COPY deno.json deno.lock ./
 RUN deno install --frozen
 
 # --- Stage 2: Final image ---
-FROM docker.io/denoland/deno:2.7.12
+FROM docker.io/denoland/deno:2.7.13
 
 LABEL org.opencontainers.image.title="jmap-mcp" \
       org.opencontainers.image.description="MCP server for JMAP email management" \
