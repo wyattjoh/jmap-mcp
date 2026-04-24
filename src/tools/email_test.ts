@@ -99,6 +99,130 @@ Deno.test("get_emails returns state field", async () => {
   assertEquals(parsed.notFound.length, 0);
 });
 
+Deno.test("get_emails sets fetchTextBodyValues when bodyValues and textBody requested", async () => {
+  // deno-lint-ignore no-explicit-any
+  let capturedArgs: any;
+  const { client } = await setup({
+    emailGet: (args: unknown) => {
+      capturedArgs = args;
+      return Promise.resolve([{
+        list: [{ id: "e1", subject: "Test" }],
+        notFound: [],
+        state: "state-123",
+      }]);
+    },
+  });
+  await client.callTool({
+    name: "get_emails",
+    arguments: {
+      ids: ["e1"],
+      properties: ["id", "bodyValues", "textBody"],
+    },
+  });
+
+  assertEquals(capturedArgs.fetchTextBodyValues, true);
+  assertEquals(capturedArgs.fetchHTMLBodyValues, false);
+});
+
+Deno.test("get_emails sets fetchHTMLBodyValues when bodyValues and htmlBody requested", async () => {
+  // deno-lint-ignore no-explicit-any
+  let capturedArgs: any;
+  const { client } = await setup({
+    emailGet: (args: unknown) => {
+      capturedArgs = args;
+      return Promise.resolve([{
+        list: [{ id: "e1", subject: "Test" }],
+        notFound: [],
+        state: "state-123",
+      }]);
+    },
+  });
+  await client.callTool({
+    name: "get_emails",
+    arguments: {
+      ids: ["e1"],
+      properties: ["id", "bodyValues", "htmlBody"],
+    },
+  });
+
+  assertEquals(capturedArgs.fetchTextBodyValues, false);
+  assertEquals(capturedArgs.fetchHTMLBodyValues, true);
+});
+
+Deno.test("get_emails does not set fetch flags when bodyValues not requested", async () => {
+  // deno-lint-ignore no-explicit-any
+  let capturedArgs: any;
+  const { client } = await setup({
+    emailGet: (args: unknown) => {
+      capturedArgs = args;
+      return Promise.resolve([{
+        list: [{ id: "e1", subject: "Test" }],
+        notFound: [],
+        state: "state-123",
+      }]);
+    },
+  });
+  await client.callTool({
+    name: "get_emails",
+    arguments: {
+      ids: ["e1"],
+      properties: ["id", "subject", "textBody"],
+    },
+  });
+
+  assertEquals(capturedArgs.fetchTextBodyValues, false);
+  assertEquals(capturedArgs.fetchHTMLBodyValues, false);
+});
+
+Deno.test("get_emails sets both fetch flags when properties omitted", async () => {
+  // deno-lint-ignore no-explicit-any
+  let capturedArgs: any;
+  const { client } = await setup({
+    emailGet: (args: unknown) => {
+      capturedArgs = args;
+      return Promise.resolve([{
+        list: [{ id: "e1", subject: "Test" }],
+        notFound: [],
+        state: "state-123",
+      }]);
+    },
+  });
+  await client.callTool({
+    name: "get_emails",
+    arguments: { ids: ["e1"] },
+  });
+
+  assertEquals(capturedArgs.fetchTextBodyValues, true);
+  assertEquals(capturedArgs.fetchHTMLBodyValues, true);
+  assertEquals(capturedArgs.properties, undefined);
+});
+
+Deno.test("get_email_changes sets fetch flags when bodyValues in properties", async () => {
+  // deno-lint-ignore no-explicit-any
+  let capturedArgs: any;
+  const { client } = await setup({
+    emailGet: (args: unknown) => {
+      capturedArgs = args;
+      return Promise.resolve([{
+        list: [{ id: "e1", subject: "Test" }],
+        notFound: [],
+        state: "state-200",
+      }]);
+    },
+  });
+  await client.callTool({
+    name: "get_email_changes",
+    arguments: {
+      sinceState: "state-100",
+      fetchEmails: true,
+      properties: ["id", "bodyValues", "textBody", "htmlBody"],
+    },
+  });
+
+  assertEquals(capturedArgs.fetchTextBodyValues, true);
+  assertEquals(capturedArgs.fetchHTMLBodyValues, true);
+});
+
 Deno.test("get_email_changes returns created/updated/destroyed", async () => {
   const { client } = await setup();
   const result = await client.callTool({

@@ -369,15 +369,21 @@ export function registerEmailTools(
 
   server.tool(
     "get_emails",
-    "Get specific emails by their IDs. Use the `properties` parameter to request only what you need — requesting all properties returns large payloads. Recommended property sets: summary: ['id', 'subject', 'from', 'to', 'receivedAt', 'preview', 'keywords', 'mailboxIds'], full read: ['id', 'subject', 'from', 'to', 'cc', 'receivedAt', 'bodyValues', 'textBody', 'htmlBody']. IMPORTANT: to get body content, you must include 'bodyValues' AND at least one of 'textBody' or 'htmlBody' in properties. Returns `state` for incremental sync via get_email_changes.",
+    "Get specific emails by their IDs. Use the `properties` parameter to request only what you need — requesting all properties returns large payloads. Recommended property sets: summary: ['id', 'subject', 'from', 'to', 'receivedAt', 'preview', 'keywords', 'mailboxIds'], full read: ['id', 'subject', 'from', 'to', 'cc', 'receivedAt', 'bodyValues', 'textBody', 'htmlBody']. To get body content, include 'bodyValues' AND at least one of 'textBody' or 'htmlBody' in properties — the server will automatically fetch the corresponding body values. Returns `state` for incremental sync via get_email_changes.",
     GetEmailsSchema.shape,
     async (args: z.infer<typeof GetEmailsSchema>) => {
       try {
+        const props = args.properties;
+        const wantsBody = !props || props.includes("bodyValues");
         const [result] = await jam.api.Email.get(
           {
             accountId,
             ids: args.ids,
-            properties: args.properties,
+            properties: props,
+            fetchTextBodyValues: wantsBody &&
+              (!props || props.includes("textBody")),
+            fetchHTMLBodyValues: wantsBody &&
+              (!props || props.includes("htmlBody")),
           } satisfies GetEmailArguments,
         );
 
@@ -471,11 +477,17 @@ export function registerEmailTools(
             ...changesResult.created,
             ...changesResult.updated,
           ];
+          const props = args.properties;
+          const wantsBody = !props || props.includes("bodyValues");
           const [emailResult] = await jam.api.Email.get(
             {
               accountId,
               ids: idsToFetch,
-              properties: args.properties,
+              properties: props,
+              fetchTextBodyValues: wantsBody &&
+                (!props || props.includes("textBody")),
+              fetchHTMLBodyValues: wantsBody &&
+                (!props || props.includes("htmlBody")),
             } satisfies GetEmailArguments,
           );
           response.emails = emailResult.list;
