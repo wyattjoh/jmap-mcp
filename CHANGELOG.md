@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.4](https://github.com/wyattjoh/jmap-mcp/compare/jmap-mcp-v0.6.3...jmap-mcp-v0.6.4) (2026-04-24)
+
+
+### Bug Fixes
+
+* set fetchTextBodyValues/fetchHTMLBodyValues flags in Email.get calls ([f97a681](https://github.com/wyattjoh/jmap-mcp/commit/f97a681ec01c27898038a5b0ccedd9a6a894fd84))
+* set fetchTextBodyValues/fetchHTMLBodyValues in Email.get calls ([20dd4c9](https://github.com/wyattjoh/jmap-mcp/commit/20dd4c94d7951a67daf08ea2a64d7565c868b0f4))
+
 ## [0.6.3](https://github.com/wyattjoh/jmap-mcp/compare/jmap-mcp-v0.6.2...jmap-mcp-v0.6.3) (2026-04-21)
 
 
