@@ -1,6 +1,7 @@
 {
   "name": "@wyattjoh/jmap-mcp",
   "version": "0.6.4",
+  "nodeModulesDir": "none",
   "license": "MIT",
   "exports": "./src/mod.ts",
   "publish": {
@@ -21,10 +22,10 @@
     "test": "deno test --allow-env --allow-net"
   },
   "imports": {
-    "@modelcontextprotocol/sdk": "npm:@modelcontextprotocol/sdk@^1.29.0",
-    "zod": "npm:zod@^4.3.6",
-    "jmap-jam": "npm:jmap-jam@^0.13.1",
-    "jmap-rfc-types": "npm:jmap-rfc-types@^0.1.2",
+    "@modelcontextprotocol/sdk": "npm:@modelcontextprotocol/sdk@^1.30.0",
+    "zod": "npm:zod@^4.4.3",
+    "jmap-jam": "npm:jmap-jam@^0.13.3",
+    "jmap-rfc-types": "npm:jmap-rfc-types@^0.2.0",
     "@std/assert": "jsr:@std/assert@^1.0.19"
   },
   "fmt": {
