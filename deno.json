@@ -1,7 +1,6 @@
 {
   "name": "@wyattjoh/jmap-mcp",
   "version": "0.6.4",
-  "nodeModulesDir": "none",
   "license": "MIT",
   "exports": "./src/mod.ts",
   "publish": {
