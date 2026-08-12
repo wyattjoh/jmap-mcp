@@ -566,6 +566,17 @@
       "npm:jmap-jam@~0.13.3",
       "npm:jmap-rfc-types@0.2",
       "npm:zod@^4.4.3"
-    ]
+    ],
+    "packageJson": {
+      "overrides": {
+        "@hono/node-server": "2.1.0",
+        "hono": "4.13.1",
+        "body-parser": "2.3.0",
+        "fast-uri": "3.1.5",
+        "ip-address": "10.5.0",
+        "path-to-regexp": "8.4.0",
+        "qs": "6.15.3"
+      }
+    }
   }
 }
