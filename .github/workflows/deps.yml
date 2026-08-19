@@ -12,12 +12,12 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: denoland/setup-deno@v2
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
         with:
           deno-version: v2.x
 
-      - uses: wyattjoh/deno-outdated@v1
+      - uses: wyattjoh/deno-outdated@483de54196c767c8d769bf0d8b36211d7282a144 # v1.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
