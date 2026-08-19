@@ -16,7 +16,7 @@
   "tasks": {
     "start": "deno run --allow-env --allow-net src/mod.ts",
     "watch": "deno run --allow-env --allow-net --watch src/mod.ts",
-    "hooks:install": "deno run --allow-read=deno.json,.git/hooks/ --allow-write=.git/hooks/ jsr:@hongminhee/deno-task-hooks",
+    "hooks:install": "deno run --allow-read=deno.json,.git/hooks/ --allow-write=.git/hooks/ jsr:@hongminhee/deno-task-hooks@0.1.2",
     "hooks:pre-commit": "deno check && deno fmt --check && deno lint",
     "hooks:pre-push": "deno publish --dry-run --allow-dirty",
     "test": "deno test --allow-env --allow-net"
