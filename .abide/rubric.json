@@ -1,0 +1,1098 @@
+{
+  "version": 1,
+  "compiledAt": "2026-09-22T16:28:28.000Z",
+  "compiledBy": "pi",
+  "sources": [
+    {
+      "path": "CLAUDE.md",
+      "sha": "3c7d579c8aabe418999c2779485505ee528e8da323ddc1ed773cfa0cf5611c6c",
+      "scope": "**/*"
+    }
+  ],
+  "rules": [
+    {
+      "id": "jmap-behavior-in-client",
+      "text": "Keep JMAP behavior in `@wyattjoh/jmap`; MCP files should validate inputs, adapt results to MCP content, and centralize user-facing tool descriptions without duplicating protocol operations.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 52
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change implement JMAP protocol behavior or direct `jmap-jam` operations in the MCP package instead of placing that behavior behind `@wyattjoh/jmap`?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.05,
+        "min": 0.02,
+        "max": 0.61,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "mcp-validates-inputs",
+      "text": "Keep JMAP behavior in `@wyattjoh/jmap`; MCP files should validate inputs, adapt results to MCP content, and centralize user-facing tool descriptions without duplicating protocol operations.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 52
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change let external MCP input reach client behavior without validation at the MCP adapter boundary?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.08,
+        "min": 0.02,
+        "max": 0.22,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "mcp-adapts-results",
+      "text": "Keep JMAP behavior in `@wyattjoh/jmap`; MCP files should validate inputs, adapt results to MCP content, and centralize user-facing tool descriptions without duplicating protocol operations.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 52
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change return a raw client or protocol result from an MCP handler instead of adapting it to MCP content?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.05,
+        "min": 0.02,
+        "max": 0.11,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "centralize-tool-descriptions",
+      "text": "Keep JMAP behavior in `@wyattjoh/jmap`; MCP files should validate inputs, adapt results to MCP content, and centralize user-facing tool descriptions without duplicating protocol operations.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 52
+      },
+      "check": {
+        "type": "deferred",
+        "reason": "needs repository context to determine whether tool descriptions or protocol operations already exist elsewhere"
+      },
+      "status": "active"
+    },
+    {
+      "id": "standalone-client-pattern",
+      "text": "`@wyattjoh/jmap` follows the same pattern as the standalone client packages in `media-server-mcp`.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 61
+      },
+      "check": {
+        "type": "deferred",
+        "reason": "needs the external media-server-mcp repository to compare its client-package pattern"
+      },
+      "status": "active"
+    },
+    {
+      "id": "connect-authenticates-and-resolves-account",
+      "text": "`connectJmap()` creates an authenticated connection and resolves the mail account.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 64
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change make `connectJmap()` return without both creating an authenticated connection and resolving the mail account?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.08,
+        "min": 0.04,
+        "max": 0.14,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "functional-client-signatures",
+      "text": "Exported functions accept a `JmapConnection` plus typed input and return typed application data.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 66
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change add a public JMAP operation that does not accept a `JmapConnection` and typed input or does not return typed application data?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.055,
+        "min": 0.01,
+        "max": 0.29,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "jmap-jam-client-dependency",
+      "text": "`jmap-jam` remains an implementation dependency of the client package.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 68
+      },
+      "when": "turn",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change remove `jmap-jam` from the client package's implementation dependencies or move its use outside that package?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 8,
+        "median": 0.03,
+        "min": 0.02,
+        "max": 0.06,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "client-independent-of-mcp",
+      "text": "Callers never need an MCP server or transport to use JMAP operations.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 69
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change make any JMAP client operation require an MCP server, MCP transport, or MCP-specific type?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.06,
+        "min": 0.02,
+        "max": 0.34,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "public-exports-multiline-jsdoc",
+      "text": "Public exports require multi-line JSDoc.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 70
+      },
+      "scope": [
+        "**/*.ts",
+        "**/*.tsx"
+      ],
+      "check": {
+        "type": "lint",
+        "how": "custom TypeScript AST rule requiring a multi-line JSDoc block on exported declarations"
+      },
+      "status": "active"
+    },
+    {
+      "id": "capability-based-tool-registration",
+      "text": "The MCP package registers tools conditionally from server capabilities.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 74
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change register an MCP tool unconditionally even though the operation depends on a server capability?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.06,
+        "min": 0.02,
+        "max": 0.52,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "handlers-delegate-and-serialize",
+      "text": "Tool handlers call `@wyattjoh/jmap` functions and serialize their results.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 74
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change add a tool handler that performs the JMAP operation itself or returns an unserialized result instead of calling `@wyattjoh/jmap` and serializing the result?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.045,
+        "min": 0.01,
+        "max": 0.36,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "backward-compatible-tool-contracts",
+      "text": "Keep existing MCP tool names and input/output behavior backward compatible.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 75
+      },
+      "when": "turn",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change rename or remove an existing MCP tool, reject previously valid input, or incompatibly change an existing tool's output?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 8,
+        "median": 0.03,
+        "min": 0.02,
+        "max": 0.07,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "read-only-tool-set",
+      "text": "Read-only accounts expose retrieval and incremental-sync tools.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 78
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change prevent a read-only account from registering retrieval or incremental-sync tools?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.07,
+        "min": 0.04,
+        "max": 0.11,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "writable-tool-set",
+      "text": "Writable accounts additionally expose keyword, mailbox, and deletion tools.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 78
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change omit keyword, mailbox, or deletion tools for writable accounts, or expose those mutation tools to read-only accounts?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.09,
+        "min": 0.05,
+        "max": 0.43,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "submission-tool-gates",
+      "text": "Submission tools require the JMAP submission capability and a writable account.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 79
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change register a submission tool without checking both the JMAP submission capability and writable-account access?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.095,
+        "min": 0.04,
+        "max": 0.84,
+        "fired": 1,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "move-replaces-mailboxes",
+      "text": "`moveEmails` and the existing `move_emails` tool intentionally replace mailbox membership with one target mailbox.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 83
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change make `moveEmails` or `move_emails` preserve old mailbox memberships or assign more than the one target mailbox?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.04,
+        "min": 0.01,
+        "max": 0.08,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "patch-preserves-mailboxes",
+      "text": "`patchEmailMailboxes` and `patch_email_mailboxes` add/remove selected memberships while preserving unspecified mailboxes.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 85
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change make `patchEmailMailboxes` or `patch_email_mailboxes` replace or remove mailbox memberships that the caller did not specify?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.07,
+        "min": 0.02,
+        "max": 0.11,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "keyword-patches-preserve-others",
+      "text": "Keyword mutations use JMAP patch paths so changing `$seen` does not remove `$flagged` or custom keywords.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 88
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change mutate keywords by replacing the full keyword map, allowing a `$seen` change to remove `$flagged` or custom keywords, instead of using JMAP patch paths?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.04,
+        "min": 0.02,
+        "max": 0.1,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "escape-mailbox-path-segments",
+      "text": "Escape mailbox IDs as JSON Pointer path segments before constructing patch keys.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 90
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change construct a JMAP patch key from a mailbox ID without first escaping the ID as a JSON Pointer path segment?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.08499999999999999,
+        "min": 0.02,
+        "max": 0.15,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "functional-no-classes",
+      "text": "Follow functional programming patterns; do not introduce classes.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 95
+      },
+      "scope": [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.js",
+        "**/*.jsx"
+      ],
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change introduce a class or replace a functional design with stateful object-oriented structure?",
+          "criteria": {
+            "true": "a new class declaration or class expression used for application behavior",
+            "false": "plain functions and immutable data; an imported third-party class is merely used"
+          }
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 4,
+        "median": 0.035,
+        "min": 0.03,
+        "max": 0.09,
+        "fired": 0,
+        "verdict": "skipped"
+      }
+    },
+    {
+      "id": "small-public-client-interface",
+      "text": "Keep the public client interface small and place protocol complexity behind it.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 96
+      },
+      "when": "turn",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change expose protocol-specific machinery through the public client interface when that complexity could remain behind an existing operation?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 8,
+        "median": 0.025,
+        "min": 0.02,
+        "max": 0.06,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "zod-validates-mcp-inputs",
+      "text": "All external MCP inputs must be validated with Zod.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 98
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change add or extend an MCP input without validating every external field through a Zod schema before use?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.07500000000000001,
+        "min": 0.02,
+        "max": 0.26,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "client-uses-jmap-types",
+      "text": "Use types from `jmap-jam` and `jmap-rfc-types` inside the client package.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 99
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change hand-write a JMAP protocol type inside the client package instead of using the available type from `jmap-jam` or `jmap-rfc-types`?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.08499999999999999,
+        "min": 0.02,
+        "max": 0.18,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "mcp-errors-use-format-error",
+      "text": "Use `formatError()` for MCP-facing error messages.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 100
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change create an MCP-facing error message directly from an error instead of passing it through `formatError()`?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.03,
+        "min": 0.02,
+        "max": 0.07,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "status-uses-console-warn",
+      "text": "Use `console.warn()` for server status messages so stdio remains protocol-safe.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 101
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change write a server status message with `console.log()` or another stdout path instead of `console.warn()`?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.015,
+        "min": 0.01,
+        "max": 0.02,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "explicit-undefined-public-properties",
+      "text": "Use explicit `| undefined` properties for structurally complete public types.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 103
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change use an optional property (`name?: T`) in a structurally complete public type where the property should be present as `name: T | undefined`?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.025,
+        "min": 0.02,
+        "max": 0.24,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "public-types-functions-multiline-jsdoc",
+      "text": "All publicly exported types and functions require multi-line JSDoc.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 104
+      },
+      "scope": [
+        "**/*.ts",
+        "**/*.tsx"
+      ],
+      "check": {
+        "type": "lint",
+        "how": "custom TypeScript AST rule requiring a multi-line JSDoc block on exported types and functions"
+      },
+      "status": "active"
+    },
+    {
+      "id": "sync-readme-and-claude",
+      "text": "Keep README and CLAUDE.md synchronized with changes to commands, tools, or structure.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 105
+      },
+      "when": "turn",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does the full change alter commands, MCP tools, or repository structure without updating both README documentation and CLAUDE.md where those facts are documented?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 8,
+        "median": 0.10500000000000001,
+        "min": 0.08,
+        "max": 0.33,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "client-tests-use-public-seam",
+      "text": "Client tests exercise exported `@wyattjoh/jmap` functions through their public interface with a structural fake connection.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 109
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change add a client test that imports internal implementation details or uses a non-structural test connection instead of exercising exported `@wyattjoh/jmap` functions with a structural fake connection?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.03,
+        "min": 0.01,
+        "max": 0.22,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "mcp-tests-use-in-memory-transport",
+      "text": "MCP tests use `InMemoryTransport` and verify tool contracts independently of transport I/O.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 111
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change add an MCP tool test that uses real transport I/O or bypasses `InMemoryTransport` instead of verifying the tool contract independently?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.03,
+        "min": 0.01,
+        "max": 0.05,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "client-tests-before-adapter-tests",
+      "text": "Add behavior tests at the client seam first, then adapter tests for schemas, registration, or serialization.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 112
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "the diff cannot establish the order in which client and adapter tests were added"
+      },
+      "status": "active"
+    },
+    {
+      "id": "email-thread-ids-are-strings",
+      "text": "Email and thread IDs are server-specific strings, not UUIDs.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 118
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change type, parse, generate, or validate an email ID or thread ID as a UUID rather than treating it as an opaque server-specific string?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.025,
+        "min": 0.01,
+        "max": 0.04,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "mailbox-hierarchy-parent-id",
+      "text": "Mailbox hierarchies use `parentId`.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 119
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change represent or traverse mailbox hierarchy without using the JMAP `parentId` relationship?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.04,
+        "min": 0.01,
+        "max": 0.17,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "email-state-keywords",
+      "text": "Keywords such as `$seen`, `$flagged`, and `$draft` control email state.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 120
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change model seen, flagged, or draft email state through fields other than the JMAP `$seen`, `$flagged`, or `$draft` keywords?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.07,
+        "min": 0.05,
+        "max": 0.13,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "iso-8601-date-filters",
+      "text": "Date filters use ISO 8601.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 121
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change accept, create, document, or send a date filter in a format other than ISO 8601?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.02,
+        "min": 0.02,
+        "max": 0.05,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "pagination-position-limit",
+      "text": "Pagination uses `position` and `limit`.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 122
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change implement JMAP pagination with parameters other than `position` and `limit`, or omit those parameters from a paginated operation?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.045,
+        "min": 0.01,
+        "max": 0.1,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "jmap-patch-json-pointer-escaping",
+      "text": "A JMAP PatchObject path has an implicit leading slash; escape `~` as `~0` and `/` as `~1` in path segments.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 123
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change build a JMAP PatchObject path with an explicit leading slash, or fail to escape `~` as `~0` and `/` as `~1` inside a path segment?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.07,
+        "min": 0.03,
+        "max": 0.17,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "bearer-tokens-from-environment",
+      "text": "Bearer tokens come from environment variables and are never logged.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 128
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change obtain a bearer token from source code, a literal, or an MCP input instead of an environment variable?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.02,
+        "min": 0.01,
+        "max": 0.04,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "never-log-bearer-tokens",
+      "text": "Bearer tokens come from environment variables and are never logged.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 128
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change send a bearer token, authorization header, or variable holding either value to a logger or console call?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.02,
+        "min": 0.01,
+        "max": 0.03,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "no-credentials-in-mcp-responses",
+      "text": "Do not expose credentials in MCP responses.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 129
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change put a bearer token, authorization header, password, API key, or other credential into MCP response content?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.02,
+        "min": 0.01,
+        "max": 0.04,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "preserve-mutation-registration-gates",
+      "text": "Preserve capability and read-only checks before registering mutation tools.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 130
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change remove, bypass, or weaken a server-capability or read-only-account check before registering a mutation tool?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.025,
+        "min": 0.02,
+        "max": 0.09,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "validate-before-client",
+      "text": "Validate external input before passing it to the client package.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 131
+      },
+      "when": "edit",
+      "check": {
+        "type": "model",
+        "question": {
+          "type": "boolean",
+          "instructions": "Does this change pass any external value into the client package before that value has been validated?"
+        }
+      },
+      "status": "active",
+      "calibration": {
+        "at": "2026-09-22T16:33:22.250Z",
+        "hunks": 20,
+        "median": 0.07500000000000001,
+        "min": 0.03,
+        "max": 0.39,
+        "fired": 0,
+        "verdict": "decisive"
+      }
+    },
+    {
+      "id": "install-precommit-hooks",
+      "text": "Run `deno task hooks:install` to install hooks.",
+      "source": {
+        "path": "CLAUDE.md",
+        "line": 25
+      },
+      "check": {
+        "type": "unenforceable",
+        "reason": "about a development-process command, not the contents of a code diff"
+      },
+      "status": "active"
+    }
+  ]
+}
