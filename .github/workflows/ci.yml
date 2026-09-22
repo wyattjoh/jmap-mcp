@@ -24,10 +24,13 @@ jobs:
         run: deno fmt --check
 
       - name: Lint code
-        run: deno lint
+        run: deno task lint
 
       - name: Type check
-        run: deno check
+        run: deno task check
 
       - name: Run tests
-        run: deno test --allow-env --allow-net
+        run: deno task test
+
+      - name: Validate JSR packages
+        run: deno task publish:check

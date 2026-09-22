@@ -2,7 +2,7 @@ import { assertEquals } from "@std/assert";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { registerEmailTools } from "./email.ts";
+import { registerEmailTools } from "../../src/tools/email.ts";
 
 // Helper to create a mock JamClient with configurable API responses
 function createMockJam(overrides: Record<string, unknown> = {}) {
@@ -44,7 +44,8 @@ function createMockJam(overrides: Record<string, unknown> = {}) {
               removed: ["e2"],
               total: 2,
             }])),
-        set: () => Promise.resolve([{ updated: {}, notUpdated: {} }]),
+        set: overrides.emailSet ??
+          (() => Promise.resolve([{ updated: {}, notUpdated: {} }])),
       },
       Mailbox: {
         query: () => Promise.resolve([{ ids: ["m1"], total: 1, position: 0 }]),
@@ -69,7 +70,12 @@ function createMockJam(overrides: Record<string, unknown> = {}) {
 async function setup(overrides: Record<string, unknown> = {}) {
   const jam = createMockJam(overrides);
   const server = new McpServer({ name: "test", version: "0.0.1" });
-  registerEmailTools(server, jam as never, "acct-1", false);
+  registerEmailTools(server, {
+    client: jam,
+    accountId: "acct-1",
+    isReadOnly: false,
+    capabilities: {},
+  } as never);
 
   const [clientTransport, serverTransport] = InMemoryTransport
     .createLinkedPair();
@@ -389,7 +395,12 @@ Deno.test("get_mailboxes passes calculateTotal to Mailbox.query", async () => {
   };
 
   const server = new McpServer({ name: "test", version: "0.0.1" });
-  registerEmailTools(server, jam as never, "acct-1", false);
+  registerEmailTools(server, {
+    client: jam,
+    accountId: "acct-1",
+    isReadOnly: false,
+    capabilities: {},
+  } as never);
 
   const [clientTransport, serverTransport] = InMemoryTransport
     .createLinkedPair();
@@ -404,4 +415,32 @@ Deno.test("get_mailboxes passes calculateTotal to Mailbox.query", async () => {
   });
 
   assertEquals(capturedArgs.calculateTotal, true);
+});
+
+Deno.test("patch_email_mailboxes preserves unspecified memberships", async () => {
+  // deno-lint-ignore no-explicit-any
+  let capturedArgs: any;
+  const { client } = await setup({
+    emailSet: (args: unknown) => {
+      capturedArgs = args;
+      return Promise.resolve([{ updated: { e1: null }, notUpdated: null }]);
+    },
+  });
+
+  const result = await client.callTool({
+    name: "patch_email_mailboxes",
+    arguments: {
+      ids: ["e1"],
+      addMailboxIds: ["Action"],
+      removeMailboxIds: ["Inbox"],
+    },
+  });
+
+  assertEquals(capturedArgs.update, {
+    e1: {
+      "mailboxIds/Action": true,
+      "mailboxIds/Inbox": null,
+    },
+  });
+  assertEquals(parseResponse(result).updated, { e1: null });
 });

@@ -1,32 +1,31 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with
-code in this repository.
+This file provides guidance to coding agents working in this repository.
 
 ## Project Overview
 
-This is a Model Context Protocol (MCP) server that provides JMAP (JSON Meta
-Application Protocol) email management tools. It's built with Deno and
-integrates with JMAP-compliant email servers like FastMail, Cyrus IMAP, and
-Stalwart Mail Server.
+This Deno workspace contains a reusable functional JMAP email client and an MCP
+server built on top of it. It supports JMAP-compliant servers such as FastMail,
+Cyrus IMAP, and Stalwart Mail Server.
 
 ## Development Commands
 
 - `deno task start` - Run the MCP server
-- `deno task watch` - Run with file watching
-- `deno check` - Type-check the project
-- `deno fmt` - Format code (excludes CHANGELOG.md)
-- `deno lint` - Lint the project
-- `deno test --allow-env --allow-net` - Run all tests
-- `deno test --allow-env --allow-net src/tools/email_test.ts` - Run a single
-  test file
-- `deno publish --dry-run --allow-dirty` - Validate JSR publish
+- `deno task watch` - Run the MCP server with file watching
+- `deno task check` - Type-check both workspace packages
+- `deno task fmt` - Format code (excluding changelogs)
+- `deno fmt --check` - Check formatting
+- `deno task lint` - Lint workspace packages
+- `deno task test` - Run all tests
+- `deno test packages/jmap/tests/client_test.ts` - Run JMAP client tests
+- `deno test packages/jmap-mcp/tests/tools/email_test.ts` - Run MCP email tool
+  tests
+- `deno task publish:check` - Validate both JSR packages
 
 ### Pre-commit Hooks
 
-Run `deno task hooks:install` to set up git hooks. Pre-commit runs
-`deno check && deno fmt --check && deno lint`. Pre-push runs
-`deno publish --dry-run --allow-dirty`.
+Run `deno task hooks:install` to install hooks. Pre-commit runs type checking,
+formatting, and linting. Pre-push validates both JSR packages.
 
 ### Required Environment Variables
 
@@ -36,84 +35,97 @@ JMAP_BEARER_TOKEN="your-bearer-token"
 JMAP_ACCOUNT_ID="account-id"  # Optional, auto-detected if not provided
 ```
 
+## Workspace Structure
+
+- `packages/jmap/` - `@wyattjoh/jmap`, the independently publishable functional
+  client library
+  - `mod.ts` - Public package interface
+  - `src/client.ts` - Connection setup and JMAP operations
+  - `tests/` - Direct client-interface tests
+- `packages/jmap-mcp/` - `@wyattjoh/jmap-mcp`, the MCP adapter and executable
+  - `src/mod.ts` - Environment configuration, capability checks, and stdio
+    startup
+  - `src/tools/email.ts` - Mail retrieval, sync, and mutation tool adapters
+  - `src/tools/submission.ts` - Send and reply tool adapters
+  - `tests/` - MCP interface tests using `InMemoryTransport`
+
+Both packages are independently publishable. Keep JMAP behavior in
+`@wyattjoh/jmap`; MCP files should validate inputs, adapt results to MCP
+content, and centralize user-facing tool descriptions without duplicating
+protocol operations.
+
 ## Architecture
 
-### Core Structure
+### Functional Client Module
 
-- **Entry point**: `src/mod.ts` - MCP server setup, JMAP client initialization,
-  and tool registration
-- **Tool modules**: `src/tools/` - Modular tool implementations
-  - `email.ts` - Email search, retrieval, mailbox management, and basic
-    operations
-  - `submission.ts` - Email composition and sending (when JMAP submission
-    capability is available)
-- **Utilities**: `src/utils.ts` - Common utilities like error formatting
+`@wyattjoh/jmap` follows the same pattern as the standalone client packages in
+`media-server-mcp`:
 
-### Key Design Patterns
+- `connectJmap()` creates an authenticated connection and resolves the mail
+  account.
+- Exported functions accept a `JmapConnection` plus typed input and return typed
+  application data.
+- `jmap-jam` remains an implementation dependency of the client package.
+- Callers never need an MCP server or transport to use JMAP operations.
+- Public exports require multi-line JSDoc.
 
-- **Functional programming style** - Functions are pure where possible, side
-  effects are contained
-- **Runtime validation** - All inputs validated with Zod schemas before
-  processing
-- **Capability-based registration** - Tools are registered based on JMAP server
-  capabilities (checked in `mod.ts` via `session.capabilities`)
-- **Graceful degradation** - Server adapts to read-only accounts and limited
-  JMAP capabilities
+### MCP Adapter Module
 
-### JMAP Integration
+The MCP package registers tools conditionally from server capabilities. Tool
+handlers call `@wyattjoh/jmap` functions and serialize their results. Keep
+existing MCP tool names and input/output behavior backward compatible.
 
-- Uses `jmap-jam` client library for JMAP RFC 8620/8621 compliance
-- Automatically detects account capabilities and registers appropriate tools
-- Supports both read-only and full-access JMAP accounts
-- Handles JMAP mail (`urn:ietf:params:jmap:mail`) and submission
-  (`urn:ietf:params:jmap:submission`) capabilities
+Read-only accounts expose retrieval and incremental-sync tools. Writable
+accounts additionally expose keyword, mailbox, and deletion tools. Submission
+tools require the JMAP submission capability and a writable account.
 
-### Testing Pattern
+### Mailbox and Keyword Mutations
 
-Tests use MCP SDK's `InMemoryTransport` to create a connected client/server
-pair, with a mock `JamClient` that stubs `jam.api.*` methods. See
-`src/tools/email_test.ts` for the pattern. New tool tests should follow this
-approach: create mock, register tools on server, call tools via client, assert
-results.
-
-### Tool Categories
-
-1. **Email Search & Retrieval**: `search_emails`, `get_emails`, `get_threads`
-2. **Mailbox Management**: `get_mailboxes`
-3. **Email Actions** (non-read-only): `mark_emails`, `move_emails`,
-   `delete_emails`
-4. **Email Composition** (submission capability): `send_email`, `reply_to_email`
+- `moveEmails` and the existing `move_emails` tool intentionally replace mailbox
+  membership with one target mailbox.
+- `patchEmailMailboxes` and `patch_email_mailboxes` add/remove selected
+  memberships while preserving unspecified mailboxes.
+- Keyword mutations use JMAP patch paths so changing `$seen` does not remove
+  `$flagged` or custom keywords.
+- Escape mailbox IDs as JSON Pointer path segments before constructing patch
+  keys.
 
 ## Development Guidelines
 
-### Adding New Tools
+- Follow functional programming patterns; do not introduce classes.
+- Keep the public client interface small and place protocol complexity behind
+  it.
+- All external MCP inputs must be validated with Zod.
+- Use types from `jmap-jam` and `jmap-rfc-types` inside the client package.
+- Use `formatError()` for MCP-facing error messages.
+- Use `console.warn()` for server status messages so stdio remains
+  protocol-safe.
+- Use explicit `| undefined` properties for structurally complete public types.
+- All publicly exported types and functions require multi-line JSDoc.
+- Keep README and CLAUDE.md synchronized with changes to commands, tools, or
+  structure.
 
-1. Create Zod validation schemas for input parameters
-2. Implement tool logic with proper error handling using `formatError()`
-3. Register tools in appropriate module (`email.ts` vs `submission.ts`)
-4. Tools should be registered conditionally based on JMAP capabilities
+## Testing
 
-### Code Style
+Client tests exercise exported `@wyattjoh/jmap` functions through their public
+interface with a structural fake connection. MCP tests use `InMemoryTransport`
+and verify tool contracts independently of transport I/O. Add behavior tests at
+the client seam first, then adapter tests for schemas, registration, or
+serialization.
 
-- Follow functional programming patterns throughout the codebase
-- Use TypeScript types imported from `jmap-jam` for JMAP objects
-- All external inputs must be validated with Zod schemas
-- Error handling should use the `formatError()` utility
-- Console output uses `console.warn()` for server status messages
-- Published to JSR as `@wyattjoh/jmap-mcp`; run `deno publish --dry-run` to
-  validate before pushing
+## JMAP Considerations
 
-### JMAP Considerations
+- Email and thread IDs are server-specific strings, not UUIDs.
+- Mailbox hierarchies use `parentId`.
+- Keywords such as `$seen`, `$flagged`, and `$draft` control email state.
+- Date filters use ISO 8601.
+- Pagination uses `position` and `limit`.
+- A JMAP PatchObject path has an implicit leading slash; escape `~` as `~0` and
+  `/` as `~1` in path segments.
 
-- Email IDs and thread IDs are server-specific strings, not UUIDs
-- Mailbox hierarchies use parent-child relationships via `parentId`
-- Keywords like `$seen`, `$flagged`, `$draft` control email state
-- Date filters must use ISO 8601 format
-- Pagination is handled via `position` and `limit` parameters
+## Security
 
-## Security Notes
-
-- Bearer tokens are provided via environment variables, never hardcoded
-- No secrets are logged or exposed in MCP responses
-- Input validation prevents injection attacks
-- JMAP protocol provides built-in security through proper authentication
+- Bearer tokens come from environment variables and are never logged.
+- Do not expose credentials in MCP responses.
+- Preserve capability and read-only checks before registering mutation tools.
+- Validate external input before passing it to the client package.

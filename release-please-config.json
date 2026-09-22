@@ -1,5 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "separate-pull-requests": false,
   "packages": {
     ".": {
       "package-name": "@wyattjoh/jmap-mcp",
@@ -7,7 +8,7 @@
       "extra-files": [
         {
           "type": "json",
-          "path": "deno.json",
+          "path": "packages/jmap-mcp/deno.json",
           "jsonpath": "$.version"
         },
         {
@@ -23,6 +24,21 @@
         {
           "type": "generic",
           "path": "README.md"
+        },
+        {
+          "type": "generic",
+          "path": "packages/jmap-mcp/README.md"
+        }
+      ]
+    },
+    "packages/jmap": {
+      "package-name": "@wyattjoh/jmap",
+      "release-type": "simple",
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "deno.json",
+          "jsonpath": "$.version"
         }
       ]
     }

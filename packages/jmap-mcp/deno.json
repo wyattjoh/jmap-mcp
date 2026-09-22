@@ -1,0 +1,25 @@
+{
+  "name": "@wyattjoh/jmap-mcp",
+  "version": "0.6.4",
+  "license": "MIT",
+  "exports": "./src/mod.ts",
+  "publish": {
+    "include": [
+      "LICENSE",
+      "README.md",
+      "src/**/*.ts",
+      "deno.json"
+    ],
+    "exclude": [
+      "tests/"
+    ]
+  },
+  "imports": {
+    "@modelcontextprotocol/sdk": "npm:@modelcontextprotocol/sdk@^1.30.0",
+    "zod": "npm:zod@^4.4.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wyattjoh/jmap-mcp.git"
+  }
+}
