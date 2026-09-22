@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { connectJmap } from "@wyattjoh/jmap";
 import { z } from "zod";
-import JamClient from "jmap-jam";
 
 import deno from "../deno.json" with { type: "json" };
 import { registerEmailTools } from "./tools/email.ts";
@@ -34,13 +34,6 @@ const getJMAPConfig = () => {
   });
 };
 
-const createJAMClient = (config: z.infer<typeof JMAPConfigSchema>) => {
-  return new JamClient({
-    sessionUrl: config.sessionUrl,
-    bearerToken: config.bearerToken,
-  });
-};
-
 const createServer = async () => {
   const server = new McpServer({
     name: "jmap",
@@ -48,20 +41,21 @@ const createServer = async () => {
   });
 
   const config = getJMAPConfig();
-  const jam = createJAMClient(config);
-  const accountId = config.accountId || await jam.getPrimaryAccount();
-  const session = await jam.session;
-  const account = session.accounts[accountId];
+  const connection = await connectJmap({
+    sessionUrl: config.sessionUrl,
+    bearerToken: config.bearerToken,
+    accountId: config.accountId,
+  });
 
-  if ("urn:ietf:params:jmap:mail" in session.capabilities) {
-    registerEmailTools(server, jam, accountId, account.isReadOnly);
+  if ("urn:ietf:params:jmap:mail" in connection.capabilities) {
+    registerEmailTools(server, connection);
     console.warn("Registered urn:ietf:params:jmap:mail tools");
 
     if (
-      "urn:ietf:params:jmap:submission" in session.capabilities &&
-      !account.isReadOnly
+      "urn:ietf:params:jmap:submission" in connection.capabilities &&
+      !connection.isReadOnly
     ) {
-      registerEmailSubmissionTools(server, jam, accountId);
+      registerEmailSubmissionTools(server, connection);
       console.warn("Registered urn:ietf:params:jmap:submission tools");
     } else {
       console.warn(

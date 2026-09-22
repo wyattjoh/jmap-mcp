@@ -1,5 +1,5 @@
 import { assertEquals } from "@std/assert";
-import { formatError, jsonStringify } from "./utils.ts";
+import { formatError, jsonStringify } from "../src/utils.ts";
 
 Deno.test("jsonStringify returns compact JSON by default", () => {
   const obj = { foo: "bar", nested: { a: 1 } };

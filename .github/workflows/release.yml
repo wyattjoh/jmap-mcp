@@ -13,10 +13,11 @@ jobs:
       pull-requests: write
     outputs:
       releases_created: ${{ steps.release.outputs.releases_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
-      major: ${{ steps.release.outputs.major }}
-      minor: ${{ steps.release.outputs.minor }}
-      patch: ${{ steps.release.outputs.patch }}
+      jmap_mcp_released: ${{ steps.release.outputs.release_created }}
+      jmap_mcp_tag: ${{ steps.release.outputs.tag_name }}
+      jmap_mcp_major: ${{ steps.release.outputs.major }}
+      jmap_mcp_minor: ${{ steps.release.outputs.minor }}
+      jmap_mcp_patch: ${{ steps.release.outputs.patch }}
     steps:
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         id: release
@@ -44,27 +45,27 @@ jobs:
         run: deno fmt --check
 
       - name: Lint code
-        run: deno lint
+        run: deno task lint
 
       - name: Type check
-        run: deno check
+        run: deno task check
 
       - name: Run tests
-        run: deno test --allow-env --allow-net
+        run: deno task test
 
       - name: Publish to JSR
         run: deno publish
 
   update-marketplace:
     needs: [release-please, publish]
-    if: ${{ needs.release-please.outputs.releases_created == 'true' }}
+    if: ${{ needs.release-please.outputs.jmap_mcp_released == 'true' }}
     runs-on: ubuntu-latest
 
     steps:
       - uses: wyattjoh/claude-code-marketplace@17fadd78d58309a28fd596731b5d8e59bc571744 # v1.28.0
         with:
           plugin-name: jmap-mcp
-          version: ${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }}
-          ref: ${{ needs.release-please.outputs.tag_name }}
+          version: ${{ needs.release-please.outputs.jmap_mcp_major }}.${{ needs.release-please.outputs.jmap_mcp_minor }}.${{ needs.release-please.outputs.jmap_mcp_patch }}
+          ref: ${{ needs.release-please.outputs.jmap_mcp_tag }}
           sha: ${{ github.sha }}
           token: ${{ secrets.MARKETPLACE_PAT }}
