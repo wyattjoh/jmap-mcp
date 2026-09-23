@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.5](https://github.com/wyattjoh/jmap-mcp/compare/jmap-mcp-v0.6.4...jmap-mcp-v0.6.5) (2026-09-22)
+
+
+### Bug Fixes
+
+* package workspace correctly in Docker ([0bee963](https://github.com/wyattjoh/jmap-mcp/commit/0bee9631ff8a68745390544d9aec09b05a2590af))
+
 ## [0.6.4](https://github.com/wyattjoh/jmap-mcp/compare/jmap-mcp-v0.6.3...jmap-mcp-v0.6.4) (2026-04-24)
 
 
