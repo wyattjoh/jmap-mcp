@@ -10,26 +10,37 @@ import { formatError } from "./utils.ts";
 
 const JMAPConfigSchema = z.object({
   sessionUrl: z.string().url().describe("JMAP server session URL"),
-  bearerToken: z.string().min(1).describe("Bearer token for authentication"),
-  accountId: z.string().optional().describe(
-    "Account ID (will be auto-detected if not provided)",
-  ),
+  bearerToken: z.string().min(1).describe("Bearer token or Basic password"),
+  username: z
+    .string()
+    .min(1)
+    .optional()
+    .describe(
+      "Username for HTTP Basic authentication (required by servers such as Stalwart that reject bearer tokens)",
+    ),
+  accountId: z
+    .string()
+    .optional()
+    .describe("Account ID (will be auto-detected if not provided)"),
 });
 
 const getJMAPConfig = () => {
   const sessionUrl = Deno.env.get("JMAP_SESSION_URL");
-  const bearerToken = Deno.env.get("JMAP_BEARER_TOKEN");
+  const bearerToken =
+    Deno.env.get("JMAP_BEARER_TOKEN") ?? Deno.env.get("JMAP_PASSWORD");
+  const username = Deno.env.get("JMAP_USERNAME");
   const accountId = Deno.env.get("JMAP_ACCOUNT_ID");
 
   if (!sessionUrl || !bearerToken) {
     throw new Error(
-      "Missing required environment variables: JMAP_SESSION_URL and JMAP_BEARER_TOKEN",
+      "Missing required environment variables: JMAP_SESSION_URL and JMAP_BEARER_TOKEN (or JMAP_PASSWORD)",
     );
   }
 
   return JMAPConfigSchema.parse({
     sessionUrl,
     bearerToken,
+    username,
     accountId,
   });
 };
@@ -44,6 +55,7 @@ const createServer = async () => {
   const connection = await connectJmap({
     sessionUrl: config.sessionUrl,
     bearerToken: config.bearerToken,
+    ...(config.username !== undefined && { username: config.username }),
     accountId: config.accountId,
   });
 
