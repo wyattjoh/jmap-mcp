@@ -112,7 +112,7 @@ Add the following to your agent of choice:
       "args": [
         "run",
         "--allow-net=api.fastmail.com",
-        "--allow-env=JMAP_SESSION_URL,JMAP_BEARER_TOKEN,JMAP_ACCOUNT_ID",
+        "--allow-env=JMAP_SESSION_URL,JMAP_BEARER_TOKEN,JMAP_PASSWORD,JMAP_USERNAME,JMAP_ACCOUNT_ID,JMAP_MCP_DEBUG",
         "jsr:@wyattjoh/jmap-mcp@0.6.5"
       ],
       "env": {
@@ -129,15 +129,53 @@ Add the following to your agent of choice:
 > Replace `api.fastmail.com` in `--allow-net` with your JMAP server's hostname
 > if not using FastMail.
 
+> **Deno permission note:** every environment variable name the server reads
+> must be listed in `--allow-env`. When run interactively, Deno prompts for
+> names that are missing from the list; when run non-interactively (e.g. spawned
+> by an MCP host), the process exits with a `NotCapable` error instead.
+
+### Stalwart Mail Server
+
+Stalwart's JMAP endpoint accepts **HTTP Basic** authentication only and rejects
+bearer tokens. Provide `JMAP_USERNAME` (your email address) and `JMAP_PASSWORD`
+(we recommend setting up an
+[app password](https://stalw.art/docs/auth/authentication/app-password/) — it
+can be revoked without changing your account password and bypasses 2FA):
+
+```json
+{
+  "mcpServers": {
+    "jmap": {
+      "type": "stdio",
+      "command": "deno",
+      "args": [
+        "run",
+        "--allow-net=mail.example.com",
+        "--allow-env=JMAP_SESSION_URL,JMAP_BEARER_TOKEN,JMAP_PASSWORD,JMAP_USERNAME,JMAP_ACCOUNT_ID,JMAP_MCP_DEBUG",
+        "jsr:@wyattjoh/jmap-mcp@0.6.5"
+      ],
+      "env": {
+        "JMAP_SESSION_URL": "https://mail.example.com/.well-known/jmap",
+        "JMAP_USERNAME": "you@example.com",
+        "JMAP_PASSWORD": "your-app-password"
+      }
+    }
+  }
+}
+```
+
 ## Usage
 
 ### Environment Variables
 
-| Variable            | Required | Description                                                     |
-| ------------------- | -------- | --------------------------------------------------------------- |
-| `JMAP_SESSION_URL`  | Yes      | JMAP server session URL (usually ends with `/.well-known/jmap`) |
-| `JMAP_BEARER_TOKEN` | Yes      | Bearer token for authentication                                 |
-| `JMAP_ACCOUNT_ID`   | No       | Account ID (auto-detected if not provided)                      |
+| Variable            | Required | Description                                                                                                                         |
+| ------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `JMAP_SESSION_URL`  | Yes      | JMAP server session URL (usually ends with `/.well-known/jmap`)                                                                     |
+| `JMAP_BEARER_TOKEN` | Yes¹     | Bearer token for authentication (e.g. a FastMail API token). ¹ Either this or `JMAP_PASSWORD` must be set                           |
+| `JMAP_PASSWORD`     | Yes¹     | Password or app password used as the HTTP Basic password when `JMAP_USERNAME` is set                                                |
+| `JMAP_USERNAME`     | No       | Username for HTTP Basic authentication (e.g. your email address). Required by servers that only accept Basic auth, such as Stalwart |
+| `JMAP_ACCOUNT_ID`   | No       | Account ID (auto-detected if not provided)                                                                                          |
+| `JMAP_MCP_DEBUG`    | No       | Set to `true` to pretty-print JSON in logs                                                                                          |
 
 ### Available Tools
 

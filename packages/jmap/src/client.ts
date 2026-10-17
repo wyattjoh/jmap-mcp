@@ -19,6 +19,7 @@ import type { GetEmailArguments } from "jmap-jam";
 export interface JmapConnectionConfig {
   readonly sessionUrl: string;
   readonly bearerToken: string;
+  readonly username?: string;
   readonly accountId: string | undefined;
 }
 
@@ -218,12 +219,8 @@ export interface GetSearchUpdatesResult {
  * Result of an email update operation.
  */
 export interface UpdateEmailsResult {
-  readonly updated:
-    | Readonly<Record<string, Email | null | undefined>>
-    | null;
-  readonly notUpdated:
-    | Readonly<Record<string, SetError | undefined>>
-    | null;
+  readonly updated: Readonly<Record<string, Email | null | undefined>> | null;
+  readonly notUpdated: Readonly<Record<string, SetError | undefined>> | null;
 }
 
 /**
@@ -231,9 +228,7 @@ export interface UpdateEmailsResult {
  */
 export interface DeleteEmailsResult {
   readonly destroyed: readonly string[] | null;
-  readonly notDestroyed:
-    | Readonly<Record<string, SetError | undefined>>
-    | null;
+  readonly notDestroyed: Readonly<Record<string, SetError | undefined>> | null;
 }
 
 /**
@@ -255,7 +250,7 @@ export interface ReplyToEmailResult extends SendEmailResult {
 /**
  * Creates an authenticated JMAP connection and resolves its mail account.
  *
- * @param config JMAP session URL, bearer token, and optional account override.
+ * @param config JMAP session URL, bearer token (or Basic password), optional username, and optional account override.
  * @returns The connected client and resolved account capabilities.
  */
 export async function connectJmap(
@@ -265,8 +260,17 @@ export async function connectJmap(
     sessionUrl: config.sessionUrl,
     bearerToken: config.bearerToken,
   });
+
+  if (config.username !== undefined) {
+    const basicHeader = `Basic ${btoa(
+      `${config.username}:${config.bearerToken}`,
+    )}`;
+    client.authHeader = basicHeader;
+    client.session = JamClient.loadSession(config.sessionUrl, basicHeader);
+  }
+
   const session = await client.session;
-  const accountId = config.accountId ?? await client.getPrimaryAccount();
+  const accountId = config.accountId ?? (await client.getPrimaryAccount());
   const account = session.accounts[accountId];
 
   if (!account) {
@@ -360,17 +364,15 @@ export async function getEmails(
 ): Promise<GetEmailsResult> {
   const properties = input.properties ? [...input.properties] : undefined;
   const wantsBody = !properties || properties.includes("bodyValues");
-  const [result] = await connection.client.api.Email.get(
-    {
-      accountId: connection.accountId,
-      ids: [...input.ids],
-      ...(properties && { properties }),
-      fetchTextBodyValues: wantsBody &&
-        (!properties || properties.includes("textBody")),
-      fetchHTMLBodyValues: wantsBody &&
-        (!properties || properties.includes("htmlBody")),
-    } satisfies GetEmailArguments,
-  );
+  const [result] = await connection.client.api.Email.get({
+    accountId: connection.accountId,
+    ids: [...input.ids],
+    ...(properties && { properties }),
+    fetchTextBodyValues:
+      wantsBody && (!properties || properties.includes("textBody")),
+    fetchHTMLBodyValues:
+      wantsBody && (!properties || properties.includes("htmlBody")),
+  } satisfies GetEmailArguments);
 
   return {
     emails: result.list as readonly Email[],
@@ -415,12 +417,13 @@ export async function getEmailChanges(
     ...(input.maxChanges !== undefined && { maxChanges: input.maxChanges }),
   });
   const changedIds = [...changes.created, ...changes.updated];
-  const fetched = input.fetchEmails && changedIds.length > 0
-    ? await getEmails(connection, {
-      ids: changedIds,
-      properties: input.properties,
-    })
-    : undefined;
+  const fetched =
+    input.fetchEmails && changedIds.length > 0
+      ? await getEmails(connection, {
+          ids: changedIds,
+          properties: input.properties,
+        })
+      : undefined;
 
   return {
     oldState: changes.oldState,
@@ -487,9 +490,7 @@ export async function markEmails(
       "keywords/$flagged": input.flagged ? true : null,
     }),
   };
-  const update = Object.fromEntries(
-    input.ids.map((id) => [id, patch]),
-  );
+  const update = Object.fromEntries(input.ids.map((id) => [id, patch]));
   const [result] = await connection.client.api.Email.set({
     accountId: connection.accountId,
     update,
@@ -537,9 +538,7 @@ export async function patchEmailMailboxes(
   connection: JmapConnection,
   input: PatchEmailMailboxesInput,
 ): Promise<UpdateEmailsResult> {
-  if (
-    input.addMailboxIds.length === 0 && input.removeMailboxIds.length === 0
-  ) {
+  if (input.addMailboxIds.length === 0 && input.removeMailboxIds.length === 0) {
     throw new Error("At least one mailbox change must be provided");
   }
 
@@ -563,9 +562,7 @@ export async function patchEmailMailboxes(
       ]),
     ),
   };
-  const update = Object.fromEntries(
-    input.ids.map((id) => [id, patch]),
-  );
+  const update = Object.fromEntries(input.ids.map((id) => [id, patch]));
   const [result] = await connection.client.api.Email.set({
     accountId: connection.accountId,
     update,
@@ -673,7 +670,7 @@ export function sendEmail(
       to: [...input.to],
       ...(input.cc && { cc: [...input.cc] }),
       ...(input.bcc && { bcc: [...input.bcc] }),
-      keywords: { "$draft": true },
+      keywords: { $draft: true },
       bodyValues: createBodyValues(input.textBody, input.htmlBody),
       attachments: [],
     },
@@ -713,11 +710,14 @@ export async function replyToEmail(
   const original = originalResult.list[0];
   if (!original) throw new Error("Original email not found");
 
-  const to = original.replyTo?.length ? original.replyTo : original.from ?? [];
+  const to = original.replyTo?.length
+    ? original.replyTo
+    : (original.from ?? []);
   const cc = input.replyAll
     ? [...(original.to ?? []), ...(original.cc ?? [])]
     : [];
-  const subject = input.subject ??
+  const subject =
+    input.subject ??
     (original.subject?.startsWith("Re: ")
       ? original.subject
       : `Re: ${original.subject}`);
@@ -730,7 +730,7 @@ export async function replyToEmail(
       ...(input.identityId && { from: [{ email: input.identityId }] }),
       to,
       cc,
-      keywords: { "$draft": true },
+      keywords: { $draft: true },
       attachments: [],
       inReplyTo: [original.id],
       references: original.references
